@@ -105,7 +105,7 @@ curl -X GET http://localhost:8000/history \
 
 ## Consignes générales
 
-L’examen a pour objectif de développer un assistant intelligent capable d’analyser du code Python, de générer automatiquement des tests unitaires avec pytest, et d’expliquer ces tests de manière pédagogique.
+L’examen a pour objectif de développer un analyseur intelligent capable d’analyser du code Python, de générer automatiquement des tests unitaires avec pytest, et d’expliquer ces tests de manière pédagogique.
 
 Pour y parvenir, vous devrez mettre en place une architecture complète combinant plusieurs outils : 
 
@@ -132,7 +132,7 @@ exam_Langchain/
     │   │   ├── Dockerfile.auth      
     │   │   ├── requirements.txt     
     │   │   └── auth.py              # Code FastAPI pour gérer signup, login, me
-    │   └── assistant/               # Service principal de l’assistant LangChain
+    │   └── main_service/               # Service principal de l’analyseur LangChain
     │       ├── Dockerfile.main      
     │       ├── requirements.txt     
     │       └── main.py              # Code FastAPI pour analyse/génération/tests/chat
@@ -146,14 +146,14 @@ exam_Langchain/
     │   └── prompts.py               # Prompts pour analyse, génération, explication, chat
     ├── Dockerfile.streamlit (optionnel)   # Dockerfile pour l’interface utilisateur Streamlit
     ├── requirements.txt (optionnel)       # Dépendances pour l’app Streamlit
-    └── app.py (optionnel)                  # Application Streamlit pour interagir avec l’assistant
+    └── app.py (optionnel)                  # Application Streamlit pour interagir avec l’analyseur
 ```
 
-L’ensemble des consignes décrites ci-dessous doit être suivi en vous appuyant sur cette structure déjà préparée, que vous enrichirez progressivement pour aboutir à un assistant fonctionnel.
+L’ensemble des consignes décrites ci-dessous doit être suivi en vous appuyant sur cette structure déjà préparée, que vous enrichirez progressivement pour aboutir à un analyseur fonctionnel.
 
 ### Le LLM (``src/core/llm.py``)
 
-Le cœur de l’assistant repose sur le modèle de langage (LLM), qui est responsable de la génération et de l’interprétation des réponses. Ce fichier a pour rôle de configurer et d’initialiser le modèle choisi, ainsi que de prévoir une solution de repli en cas de problème.
+Le cœur de l’analyseur repose sur le modèle de langage (LLM), qui est responsable de la génération et de l’interprétation des réponses. Ce fichier a pour rôle de configurer et d’initialiser le modèle choisi, ainsi que de prévoir une solution de repli en cas de problème.
 
 L’implémentation doit inclure :
 
@@ -166,11 +166,11 @@ Cette couche d’abstraction permet de séparer clairement la logique métier (c
 
 Les prompts jouent un rôle central dans l’architecture, car ce sont eux qui définissent la manière dont le modèle doit raisonner et formuler ses réponses. Ils servent d’instructions claires et contraignantes au LLM pour garantir que les sorties soient exploitables.
 
-Dans cet examen, vous devez **mettre en place différents prompts** correspondant aux fonctionnalités attendues de l’assistant :
+Dans cet examen, vous devez **mettre en place différents prompts** correspondant aux fonctionnalités attendues de l’analyseur :
 
 - **Prompt d’analyse de code** : Demande au LLM d’évaluer un extrait de code Python et de déterminer s’il est optimal. Le modèle doit identifier d’éventuels problèmes (lisibilité, performance, bonnes pratiques manquantes) et proposer des améliorations.
-- **Prompt de génération de tests unitaires** : A partir d’une fonction Python donnée, l’assistant doit produire un test unitaire en pytest. La consigne doit obliger le modèle à répondre avec un contenu structuré, afin de pouvoir extraire le code du test automatiquement.
-- **Prompt d’explication de tests** : Explication pédagogique et détaillée d’un test unitaire. L’assistant doit se comporter comme un professeur et rendre le test compréhensible pour un étudiant ou un développeur débutant.
+- **Prompt de génération de tests unitaires** : A partir d’une fonction Python donnée, l’analyseur doit produire un test unitaire en pytest. La consigne doit obliger le modèle à répondre avec un contenu structuré, afin de pouvoir extraire le code du test automatiquement.
+- **Prompt d’explication de tests** : Explication pédagogique et détaillée d’un test unitaire. L’analyseur doit se comporter comme un professeur et rendre le test compréhensible pour un étudiant ou un développeur débutant.
 - **Prompt de conversation libre** : Discussion naturelle avec l’utilisateur. Ce prompt doit être conçu pour fonctionner avec la mémoire conversationnelle, en intégrant l’historique des échanges afin de donner de la continuité au dialogue.
 
 Chaque prompt doit être construit de façon à toujours produire une réponse en JSON valide, afin de pouvoir être interprétée par les parsers.
@@ -181,7 +181,7 @@ Chaque prompt doit être construit de façon à toujours produire une réponse e
 
 Les parsers constituent une étape essentielle du projet : ils permettent de convertir les réponses brutes du modèle en objets structurés et exploitables. Comme le LLM renvoie du texte, il est indispensable de transformer ces sorties en formats clairs (par exemple JSON) pour pouvoir les manipuler dans l’API et la mémoire.
 
-Chaque fonctionnalité de l’assistant est associée à un parser dédié :
+Chaque fonctionnalité de l’analyseur est associée à un parser dédié :
 
 - **Parser d’analyse de code** : Transformer la réponse du modèle en un objet contenant trois informations clés : 
     - code optimal ou non
@@ -198,7 +198,7 @@ Ces parsers doivent être construits avec Pydantic, ce qui garantit :
 
 ### Les Chaînes (``src/core/chains.py``)
 
-Les chaînes LangChain constituent le cœur logique de l’assistant : elles orchestrent le flux d’information entre les prompts, le modèle de langage et les parsers. Chaque fonctionnalité repose sur une chaîne dédiée, qui définit clairement comment le LLM doit être sollicité et comment sa sortie doit être exploitée.
+Les chaînes LangChain constituent le cœur logique de l’analyseur : elles orchestrent le flux d’information entre les prompts, le modèle de langage et les parsers. Chaque fonctionnalité repose sur une chaîne dédiée, qui définit clairement comment le LLM doit être sollicité et comment sa sortie doit être exploitée.
 
 Vous devez mettre en place plusieurs chaînes :
 
@@ -237,9 +237,9 @@ Cette API est dédiée à la gestion de la sécurité et des utilisateurs. Elle 
 
 Chaque endpoint doit être protégé et renvoyer des erreurs claires en cas de problème (utilisateur existant, identifiants incorrects). Le service dispose de son propre Dockerfile et de dépendances spécifiques.
 
-#### L’API principale (``src/api/assistant/``)
+#### L’API principale (``src/api/main_service/``)
 
-Cette API constitue le cœur de l’assistant. Elle doit exposer plusieurs endpoints permettant d’interagir avec les chaînes LangChain définies dans ``src/core/``. Les fonctionnalités attendues sont :
+Cette API constitue le cœur de l’analyseur. Elle doit exposer plusieurs endpoints permettant d’interagir avec les chaînes LangChain définies dans ``src/core/``. Les fonctionnalités attendues sont :
 
 - **Analyser un code Python (``/analyze``)** : Invoque la chaîne d’analyse et retourne l’évaluation du code.
 - **Générer un test unitaire (``/generate_test``)** : Appelle la chaîne de génération pour produire un test en pytest.
@@ -260,18 +260,18 @@ Cette API constitue le cœur de l’assistant. Elle doit exposer plusieurs endpo
 
 ### Suivi et Monitoring avec LangSmith 
 
-Pour améliorer la traçabilité et le suivi de l’assistant, il est nécessaire d’intégrer LangSmith, la plateforme de monitoring et de debug pour LangChain. 
+Pour améliorer la traçabilité et le suivi de l’analyseur, il est nécessaire d’intégrer LangSmith, la plateforme de monitoring et de debug pour LangChain. 
 
 - Tracer toutes les requêtes envoyées au LLM, avec leur prompt et leur réponse.
 - Visualiser les chaînes et leurs étapes (prompts, parsers, mémoire) dans une interface graphique.
 - Déboguer plus facilement en cas de problème de format ou d’erreur du modèle.
-- Comparer plusieurs versions de prompts ou de chaînes afin d’optimiser les performances de l’assistant.
+- Comparer plusieurs versions de prompts ou de chaînes afin d’optimiser les performances de l’analyseur.
 
 Pour activer LangSmith, vous devez configurer vos variables d’environnement dans le fichier ``.env``.
 
 ### Interface Streamlit 
 
-En plus des APIs, vous pouvez proposer une interface utilisateur développée avec Streamlit. Elle rend l’assistant beaucoup plus accessible et agréable à tester, en offrant une interaction directe sans passer par des requêtes API manuelles.
+En plus des APIs, vous pouvez proposer une interface utilisateur développée avec Streamlit. Elle rend l’analyseur beaucoup plus accessible et agréable à tester, en offrant une interaction directe sans passer par des requêtes API manuelles.
 
 **Fonctionnalités attendues**
 
@@ -280,7 +280,7 @@ En plus des APIs, vous pouvez proposer une interface utilisateur développée av
 - **Génération de tests** : Fournir une fonction Python et obtenir automatiquement un test unitaire en pytest.
 - **Explication de tests** : Coller un test unitaire et recevoir une explication détaillée et pédagogique.
 - **Pipeline complet** : Exécuter en une seule fois l’analyse → génération → explication.
-- **Console Interactive** : Discuter avec l’assistant de manière naturelle, en utilisant la mémoire conversationnelle.
+- **Console Interactive** : Discuter avec l’analyseur de manière naturelle, en utilisant la mémoire conversationnelle.
 - **Historique** : Visualiser toutes les interactions de la session en cours.
 
 ### Déploiement avec Docker et Makefile
@@ -291,7 +291,7 @@ L’ensemble du projet doit être entièrement conteneurisé afin de garantir un
 
 - **auth** : l’API d’authentification, responsable de la gestion des utilisateurs
 - **main** : l’API principale, qui expose les fonctionnalités LangChain (analyse, génération de tests, explication, pipeline, chat, historique).
-- **streamlit** : l’interface utilisateur, permettant de tester facilement l’assistant via une interface graphique.
+- **streamlit** : l’interface utilisateur, permettant de tester facilement l’analyseur via une interface graphique.
 
 Chaque service dispose de son propre **Dockerfile** et d’un fichier **requirements.txt** spécifique.
 
@@ -311,11 +311,11 @@ make
 ### README.md 
 
 Votre projet doit obligatoirement contenir un fichier **README.md** clair et structuré.
-Ce document doit expliquer le fonctionnement global de votre assistant, ainsi que la manière de le déployer et de le tester.
+Ce document doit expliquer le fonctionnement global de votre analyseur, ainsi que la manière de le déployer et de le tester.
 
 - Étapes pour configurer ``.env``.
 - Commandes principales du Makefile (make up, make down, make logs).
-- Liste des endpoints disponibles et des ports (API auth et API assistant).
+- Liste des endpoints disponibles et des ports (API auth et API analyseur).
 
 **Tests**
 
