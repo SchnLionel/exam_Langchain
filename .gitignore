@@ -1,0 +1,13 @@
+.env
+.venv
+__pycache__/
+*.pyc
+.pytest_cache/
+.ipynb_checkpoints/
+.DS_Store
+node_modules/
+dist/
+build/
+.agent/
+.gemini/
+.system_generated/

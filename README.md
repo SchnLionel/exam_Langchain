@@ -1,3 +1,106 @@
+# 🤖 Assistant Python LangChain
+
+## 🚀 Démarrage rapide
+
+### 1. Configurer le fichier `.env`
+
+```env
+GROQ_API_KEY=votre_clé_groq
+LANGCHAIN_TRACING_V2=true
+LANGCHAIN_API_KEY=votre_clé_langsmith
+LANGCHAIN_PROJECT=examen_langchain
+LANGCHAIN_ENDPOINT=https://api.smith.langchain.com
+```
+
+### 2. Lancer le projet
+
+```bash
+make
+```
+
+### 3. Ports disponibles
+
+| Service       | URL                         |
+|---------------|-----------------------------|
+| API Auth      | http://localhost:8001        |
+| API Assistant | http://localhost:8000        |
+| Streamlit     | http://localhost:8501        |
+
+### 4. Commandes Makefile
+
+```bash
+make         # Lance tous les services
+make down    # Arrête tout
+make logs    # Affiche les logs
+make build   # Reconstruit les images
+make clean   # Arrête et supprime les volumes
+```
+
+---
+
+## 🧪 Tests des endpoints
+
+### Inscription
+```bash
+curl -X POST http://localhost:8001/signup \
+  -H "Content-Type: application/json" \
+  -d '{"username": "alice", "password": "secret"}'
+```
+
+### Login (récupérer le token JWT)
+```bash
+curl -X POST http://localhost:8001/login \
+  -d "username=alice&password=secret"
+```
+
+### Analyse de code
+```bash
+curl -X POST http://localhost:8000/analyze \
+  -H "Authorization: Bearer <TOKEN>" \
+  -H "Content-Type: application/json" \
+  -d '{"code": "def add(a,b):\n  return a+b"}'
+```
+
+### Génération de test
+```bash
+curl -X POST http://localhost:8000/generate_test \
+  -H "Authorization: Bearer <TOKEN>" \
+  -H "Content-Type: application/json" \
+  -d '{"code": "def add(a, b):\n    return a + b"}'
+```
+
+### Explication de test
+```bash
+curl -X POST http://localhost:8000/explain_test \
+  -H "Authorization: Bearer <TOKEN>" \
+  -H "Content-Type: application/json" \
+  -d '{"test_code": "def test_add():\n    assert add(1,2) == 3"}'
+```
+
+### Pipeline complet
+```bash
+curl -X POST http://localhost:8000/full_pipeline \
+  -H "Authorization: Bearer <TOKEN>" \
+  -H "Content-Type: application/json" \
+  -d '{"code": "def add(a: int, b: int) -> int:\n    return a + b"}'
+```
+
+### Chat
+```bash
+curl -X POST http://localhost:8000/chat \
+  -H "Authorization: Bearer <TOKEN>" \
+  -H "Content-Type: application/json" \
+  -d '{"message": "Explique moi pytest"}'
+```
+
+### Historique
+```bash
+curl -X GET http://localhost:8000/history \
+  -H "Authorization: Bearer <TOKEN>"
+```
+
+---
+
 # Examen LangChain : Assistant de Tests Unitaires Python
 
 ## Consignes générales

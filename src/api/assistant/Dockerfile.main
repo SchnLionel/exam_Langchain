@@ -1,0 +1,16 @@
+FROM python:3.13-slim
+
+WORKDIR /app
+
+COPY api/assistant/requirements.txt .
+RUN pip install --no-cache-dir -r requirements.txt
+
+# Copie des modules LangChain (depuis le context = ./src)
+COPY core ./src/core
+COPY memory ./src/memory
+COPY prompts ./src/prompts
+COPY api/assistant/main.py .
+
+EXPOSE 8000
+
+CMD ["uvicorn", "main:app", "--host", "0.0.0.0", "--port", "8000"]
