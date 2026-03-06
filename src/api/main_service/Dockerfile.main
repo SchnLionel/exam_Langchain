@@ -2,14 +2,14 @@ FROM python:3.13-slim
 
 WORKDIR /app
 
-COPY api/assistant/requirements.txt .
+COPY api/main_service/requirements.txt .
 RUN pip install --no-cache-dir -r requirements.txt
 
 # Copie des modules LangChain (depuis le context = ./src)
 COPY core ./src/core
 COPY memory ./src/memory
 COPY prompts ./src/prompts
-COPY api/assistant/main.py .
+COPY api/main_service/main.py .
 
 EXPOSE 8000
 

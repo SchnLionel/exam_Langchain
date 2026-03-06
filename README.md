@@ -101,7 +101,7 @@ curl -X GET http://localhost:8000/history \
 
 ---
 
-# Examen LangChain : Assistant de Tests Unitaires Python
+# Examen LangChain : Analyseur de Tests Unitaires Python
 
 ## Consignes générales
 
@@ -280,7 +280,7 @@ En plus des APIs, vous pouvez proposer une interface utilisateur développée av
 - **Génération de tests** : Fournir une fonction Python et obtenir automatiquement un test unitaire en pytest.
 - **Explication de tests** : Coller un test unitaire et recevoir une explication détaillée et pédagogique.
 - **Pipeline complet** : Exécuter en une seule fois l’analyse → génération → explication.
-- **Chat libre** : Discuter avec l’assistant de manière naturelle, en utilisant la mémoire conversationnelle.
+- **Console Interactive** : Discuter avec l’assistant de manière naturelle, en utilisant la mémoire conversationnelle.
 - **Historique** : Visualiser toutes les interactions de la session en cours.
 
 ### Déploiement avec Docker et Makefile

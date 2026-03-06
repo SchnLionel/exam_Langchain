@@ -16,7 +16,7 @@ services:
   main:
     build:
       context: ./src
-      dockerfile: api/assistant/Dockerfile.main
+      dockerfile: api/main_service/Dockerfile.main
     ports:
       - "8000:8000"
     env_file:
