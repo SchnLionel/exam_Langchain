@@ -38,7 +38,7 @@ def get_current_user(token: str = Depends(oauth2_scheme)) -> str:
         raise HTTPException(status_code=401, detail="Impossible de vérifier le token")
 
 
-# ── Endpoint 1 : Analyser du code ────────────────────────────────────────────
+# Endpoint : Analyse de code
 @app.post("/analyze")
 def analyze(data: CodeInput, username: str = Depends(get_current_user)):
     result = analysis_chain.invoke({"input": data.code})
@@ -48,7 +48,7 @@ def analyze(data: CodeInput, username: str = Depends(get_current_user)):
     return result.dict()
 
 
-# ── Endpoint 2 : Générer un test ─────────────────────────────────────────────
+# Endpoint : Génération de test
 @app.post("/generate_test")
 def generate_test(data: CodeInput, username: str = Depends(get_current_user)):
     result = test_generation_chain.invoke({"input": data.code})
@@ -57,7 +57,7 @@ def generate_test(data: CodeInput, username: str = Depends(get_current_user)):
     return result.dict()
 
 
-# ── Endpoint 3 : Expliquer un test ───────────────────────────────────────────
+# Endpoint : Explication de test
 @app.post("/explain_test")
 def explain_test(data: TestInput, username: str = Depends(get_current_user)):
     result = explanation_chain.invoke({"input": data.test_code})
@@ -66,7 +66,7 @@ def explain_test(data: TestInput, username: str = Depends(get_current_user)):
     return result.dict()
 
 
-# ── Endpoint 4 : Pipeline complet ────────────────────────────────────────────
+# Endpoint : Pipeline complet
 @app.post("/full_pipeline")
 def full_pipeline(data: CodeInput, username: str = Depends(get_current_user)):
     # Étape 1 : analyser le code
@@ -92,7 +92,7 @@ def full_pipeline(data: CodeInput, username: str = Depends(get_current_user)):
     }
 
 
-# ── Endpoint 5 : Chat avec mémoire ───────────────────────────────────────────
+# Endpoint : Console Interactive
 @app.post("/chat")
 def chat(data: ChatInput, username: str = Depends(get_current_user)):
     result = chat_chain.invoke(
@@ -102,7 +102,7 @@ def chat(data: ChatInput, username: str = Depends(get_current_user)):
     return {"response": result.content}
 
 
-# ── Endpoint 6 : Historique ──────────────────────────────────────────────────
+# Endpoint : Historique
 @app.get("/history")
 def history(username: str = Depends(get_current_user)):
     return {"history": get_user_history(username)}

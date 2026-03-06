@@ -23,7 +23,7 @@ explanation_prompt = ChatPromptTemplate.from_messages([
 # PROMPT 4 : Pour le chat libre (avec mémoire des échanges précédents)
 # MessagesPlaceholder("history") injecte les anciens messages dans la conversation
 chat_prompt = ChatPromptTemplate.from_messages([
-    ("system", "Tu es un assistant Python utile et pédagogique."),
+    ("system", "Fournis des réponses précises et pédagogiques sur Python."),
     MessagesPlaceholder(variable_name="history"),
     ("human", "{input}")
 ])

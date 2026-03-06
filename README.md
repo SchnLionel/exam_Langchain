@@ -1,4 +1,4 @@
-# 🤖 Assistant Python LangChain
+# Outil de Test Automatisé Python
 
 ## 🚀 Démarrage rapide
 
@@ -23,8 +23,8 @@ make
 | Service       | URL                         |
 |---------------|-----------------------------|
 | API Auth      | http://localhost:8001        |
-| API Assistant | http://localhost:8000        |
-| Streamlit     | http://localhost:8501        |
+| API Analyse   | http://localhost:8000        |
+| Interface     | http://localhost:8501        |
 
 ### 4. Commandes Makefile
 

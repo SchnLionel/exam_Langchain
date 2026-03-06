@@ -4,7 +4,7 @@ import requests
 API_AUTH = "http://auth:8001"
 API_MAIN = "http://main:8000"
 
-st.title("🤖 Assistant Python LangChain")
+st.title("Outil de Test Python")
 
 # ── Authentification ─────────────────────────────────────────────────────────
 st.sidebar.header("Connexion")
@@ -66,9 +66,9 @@ with tab4:
         r = requests.post(f"{API_MAIN}/full_pipeline", json={"code": code}, headers=headers)
         st.json(r.json())
 
-# Tab 5 : Chat
+# Tab 5 : Console Interactive
 with tab5:
-    st.subheader("Chat libre avec l'assistant")
+    st.subheader("Console Interactive")
     message = st.text_input("Votre message")
     if st.button("Envoyer"):
         r = requests.post(f"{API_MAIN}/chat", json={"message": message}, headers=headers)
