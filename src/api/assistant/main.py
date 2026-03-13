@@ -10,13 +10,14 @@ from src.memory.memory import get_user_history, store, get_session_history
 
 load_dotenv()
 
-app = FastAPI()
-oauth2_scheme = OAuth2PasswordBearer(tokenUrl="http://localhost:8001/login")
-
 AUTH_URL = os.getenv("AUTH_SERVICE_URL", "http://auth:8001")
+TOKEN_URL = os.getenv("TOKEN_URL", f"{AUTH_URL}/login")
+
+app = FastAPI()
+oauth2_scheme = OAuth2PasswordBearer(tokenUrl=TOKEN_URL)
 
 
-# Modèles de données reçues dans les requêtes
+# Modèles Pydantic pour les requêtes
 class CodeInput(BaseModel):
     code: str
 
@@ -38,7 +39,7 @@ def get_current_user(token: str = Depends(oauth2_scheme)) -> str:
         raise HTTPException(status_code=401, detail="Impossible de vérifier le token")
 
 
-# Endpoint : Analyse de code
+# Analyse de code
 @app.post("/analyze")
 def analyze(data: CodeInput, username: str = Depends(get_current_user)):
     result = analysis_chain.invoke({"input": data.code})
@@ -48,7 +49,7 @@ def analyze(data: CodeInput, username: str = Depends(get_current_user)):
     return result.dict()
 
 
-# Endpoint : Génération de test
+# Génération de test
 @app.post("/generate_test")
 def generate_test(data: CodeInput, username: str = Depends(get_current_user)):
     result = test_generation_chain.invoke({"input": data.code})
@@ -57,7 +58,7 @@ def generate_test(data: CodeInput, username: str = Depends(get_current_user)):
     return result.dict()
 
 
-# Endpoint : Explication de test
+# Explication de test
 @app.post("/explain_test")
 def explain_test(data: TestInput, username: str = Depends(get_current_user)):
     result = explanation_chain.invoke({"input": data.test_code})
@@ -66,7 +67,7 @@ def explain_test(data: TestInput, username: str = Depends(get_current_user)):
     return result.dict()
 
 
-# Endpoint : Pipeline complet
+# Pipeline complet
 @app.post("/full_pipeline")
 def full_pipeline(data: CodeInput, username: str = Depends(get_current_user)):
     # Étape 1 : analyser le code
@@ -92,7 +93,7 @@ def full_pipeline(data: CodeInput, username: str = Depends(get_current_user)):
     }
 
 
-# Endpoint : Console Interactive
+# Chat conversationnel
 @app.post("/chat")
 def chat(data: ChatInput, username: str = Depends(get_current_user)):
     result = chat_chain.invoke(
@@ -102,7 +103,7 @@ def chat(data: ChatInput, username: str = Depends(get_current_user)):
     return {"response": result.content}
 
 
-# Endpoint : Historique
+# Historique
 @app.get("/history")
 def history(username: str = Depends(get_current_user)):
     return {"history": get_user_history(username)}

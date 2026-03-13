@@ -132,7 +132,7 @@ exam_Langchain/
     │   │   ├── Dockerfile.auth      
     │   │   ├── requirements.txt     
     │   │   └── auth.py              # Code FastAPI pour gérer signup, login, me
-    │   └── main_service/               # Service principal de l’analyseur LangChain
+    │   └── assistant/               # Service principal de l’analyseur LangChain
     │       ├── Dockerfile.main      
     │       ├── requirements.txt     
     │       └── main.py              # Code FastAPI pour analyse/génération/tests/chat
@@ -237,7 +237,7 @@ Cette API est dédiée à la gestion de la sécurité et des utilisateurs. Elle 
 
 Chaque endpoint doit être protégé et renvoyer des erreurs claires en cas de problème (utilisateur existant, identifiants incorrects). Le service dispose de son propre Dockerfile et de dépendances spécifiques.
 
-#### L’API principale (``src/api/main_service/``)
+#### L’API principale (``src/api/assistant/``)
 
 Cette API constitue le cœur de l’analyseur. Elle doit exposer plusieurs endpoints permettant d’interagir avec les chaînes LangChain définies dans ``src/core/``. Les fonctionnalités attendues sont :
 
@@ -254,7 +254,7 @@ Cette API constitue le cœur de l’analyseur. Elle doit exposer plusieurs endpo
 > ⚠️ ***POINTS D'ATTENTION*** ⚠️ 
 >
 > - Les résultats des endpoints **``/analyze``**, **``/generate_test``**, **``/explain_test``** et **``/full_pipeline``** doivent être **enregistrés dans la mémoire associée à l’utilisateur**, afin que chaque interaction soit conservée dans son historique.
-> - Les deux APIs doivent tourner dans **des conteneurs distincts (auth_service et main_service)**.
+> - Les deux APIs doivent tourner dans **des conteneurs distincts (auth_service et assistant_service)**.
 > - **L’API principale dépend de l’API d’authentification** pour vérifier l’identité des utilisateurs.
 > - Une gestion rigoureuse des erreurs est indispensable : toutes les exceptions doivent être capturées et transformées en réponses HTTP explicites.
 

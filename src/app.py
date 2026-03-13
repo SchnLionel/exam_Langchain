@@ -1,8 +1,10 @@
 import streamlit as st
 import requests
 
-API_AUTH = "http://auth:8001"
-API_MAIN = "http://main:8000"
+import os
+
+API_AUTH = os.getenv("API_AUTH_URL", "http://auth:8001")
+API_MAIN = os.getenv("API_MAIN_URL", "http://main:8000")
 
 st.title("Outil de Test Python")
 
@@ -66,9 +68,9 @@ with tab4:
         r = requests.post(f"{API_MAIN}/full_pipeline", json={"code": code}, headers=headers)
         st.json(r.json())
 
-# Tab 5 : Console Interactive
+# Tab 5 : Chat
 with tab5:
-    st.subheader("Console Interactive")
+    st.subheader("Chat avec l'assistant")
     message = st.text_input("Votre message")
     if st.button("Envoyer"):
         r = requests.post(f"{API_MAIN}/chat", json={"message": message}, headers=headers)
